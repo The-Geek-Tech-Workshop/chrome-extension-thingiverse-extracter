@@ -1,0 +1,24 @@
+
+{
+  "manifest_version": 2,
+  "name": "Thingiverse Parser",
+  "version": "1.4",
+  "description": "Parses Thingiverse entries and submits signed data to a configurable API",
+  "permissions": [
+    "activeTab",
+    "https://www.thingiverse.com/*",
+    "<all_urls>",
+    "storage"
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Configure Thingiverse Parser"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.thingiverse.com/thing:*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}

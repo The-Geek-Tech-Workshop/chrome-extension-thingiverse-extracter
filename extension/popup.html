@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Thingiverse Parser Configuration</title>
+  <style>
+    body { width: 300px; padding: 10px; }
+    textarea, input { width: 100%; margin-bottom: 10px; }
+    textarea { height: 100px; }
+  </style>
+</head>
+<body>
+  <h2>Configuration</h2>
+  <label for="apiUrlInput">API URL:</label>
+  <input type="text" id="apiUrlInput" placeholder="Enter API URL">
+  <label for="privateKeyInput">Private Key (JWK format):</label>
+  <textarea id="privateKeyInput" placeholder="Paste your private key here"></textarea>
+  <button id="saveButton">Save</button>
+  <p id="status"></p>
+  <script src="popup.js"></script>
+</body>
+</html>
