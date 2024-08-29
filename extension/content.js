@@ -61,7 +61,7 @@ async function submitToAPI(data) {
     const signature = await signData(data);
     
     // Retrieve the API URL from storage
-    const result = await new Promise((resolve) => chrome.storage.local.get(['apiUrl'], resolve));
+    const result = await chrome.storage.local.get(['apiUrl']);
     const apiUrl = result.apiUrl;
     
     if (!apiUrl) {
@@ -89,8 +89,8 @@ async function submitToAPI(data) {
 }
 
 function addParseButton() {
-  const shareButton = document.querySelector('.thing-share-button');
-  if (shareButton && !document.querySelector('#parse-submit-button')) {
+  const downloadAllButton = document.querySelector('button[data-testid="thing-page-download-all-button"]');
+  if (downloadAllButton && !document.querySelector('#parse-submit-button')) {
     const parseButton = document.createElement('button');
     parseButton.id = 'parse-submit-button';
     parseButton.className = 'parse-submit-button';
@@ -99,7 +99,7 @@ function addParseButton() {
       const data = parseThingiverseData();
       await submitToAPI(data);
     });
-    shareButton.parentNode.insertBefore(parseButton, shareButton.nextSibling);
+    downloadAllButton.parentNode.insertBefore(parseButton, downloadAllButton);
   }
 }
 
