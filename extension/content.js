@@ -57,49 +57,58 @@ async function signData(data) {
 }
 
 async function submitToAPI(data) {
-  try {
-    const signature = await signData(data);
-    
-    // Retrieve the API URL from storage
-    const result = await chrome.storage.local.get(['apiUrl']);
-    const apiUrl = result.apiUrl;
-    
-    if (!apiUrl) {
-      throw new Error("API URL not set. Please configure it in the extension settings.");
-    }
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(['apiUrl'], async (result) => {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError);
+      }
 
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: data,
-        signature: signature
-      })
+      const apiUrl = result.apiUrl;
+      if (!apiUrl) {
+        return reject(new Error("API URL not found. Please set it in the extension configuration."));
+      }
+
+      try {
+        const signature = await signData(data);
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            data: data,
+            signature: signature
+          })
+        });
+
+        const result = await response.json();
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
     });
-
-    const responseData = await response.json();
-    console.log('Success:', responseData);
-    alert('Data submitted successfully!');
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Error submitting data: ' + error.message);
-  }
+  });
 }
 
 function addParseButton() {
-  const downloadAllButton = document.querySelector('button[data-testid="thing-page-download-all-button"]');
-  if (downloadAllButton && !document.querySelector('#parse-submit-button')) {
+  const shareButton = document.querySelector('button[aria-label="Share Thing"]');
+  if (shareButton && !document.querySelector('#parse-submit-button')) {
     const parseButton = document.createElement('button');
     parseButton.id = 'parse-submit-button';
     parseButton.className = 'parse-submit-button';
     parseButton.innerText = 'Parse & Submit';
     parseButton.addEventListener('click', async () => {
-      const data = parseThingiverseData();
-      await submitToAPI(data);
+      try {
+        const data = parseThingiverseData();
+        const result = await submitToAPI(data);
+        console.log('Success:', result);
+        alert('Data submitted successfully!');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error submitting data: ' + error.message);
+      }
     });
-    downloadAllButton.parentNode.insertBefore(parseButton, downloadAllButton);
+    shareButton.parentNode.insertBefore(parseButton, shareButton.nextSibling);
   }
 }
 
