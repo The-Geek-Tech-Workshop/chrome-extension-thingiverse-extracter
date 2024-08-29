@@ -1,0 +1,23 @@
+name: Zip and Upload Extension
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Zip extension directory
+      run: zip -r extension.zip extension
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: extension
+        path: extension.zip
