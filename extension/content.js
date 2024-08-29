@@ -1,18 +1,26 @@
 function parseThingiverseData() {
-  const title = document.querySelector('h1').innerText;
-  const description = document.querySelector('.thing-description').innerText;
-  const creator = document.querySelector('.thing-creator').innerText;
-  const likes = document.querySelector('.thing-like-count').innerText;
-  const downloads = document.querySelector('.thing-download-count').innerText;
+  const name = document.querySelector('[class^="DetailPageTitle__thingTitleName--"]').innerText;
+  const designer = document.querySelector('[class^="DetailPageTitle__thingTitleLink--"]').innerText;
+  // Extract thing-id from URL
+  const thingId = extractThingId(window.location);
 
   return {
-    title,
-    description,
-    creator,
-    likes,
-    downloads,
-    url: window.location.href
+    name,
+    designer,
+    sourceId: thingId,
+    source: "TIV"
   };
+}
+
+function extractThingId(url) {
+  // Regular expression to match Thingiverse URLs and extract thingId
+  const regex = /https:\/\/(?:www\.)?thingiverse\.com\/thing:(\d+)/;
+  
+  // Try to match the URL
+  const match = url.match(regex);
+  
+  // If there's a match, return the thingId, otherwise return null
+  return match ? match[1] : null;
 }
 
 async function signData(data) {
