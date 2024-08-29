@@ -2,7 +2,7 @@ function parseThingiverseData() {
   const name = document.querySelector('[class^="DetailPageTitle__thingTitleName--"]').innerText;
   const designer = document.querySelector('[class^="DetailPageTitle__thingTitleLink--"]').innerText;
   // Extract thing-id from URL
-  const thingId = extractThingId(window.location);
+  const thingId = extractThingId(window.location.href);
 
   return {
     name,
@@ -12,9 +12,10 @@ function parseThingiverseData() {
   };
 }
 
+// Regular expression to match Thingiverse URLs and extract thingId
+const regex = /https:\/\/(?:www\.)?thingiverse\.com\/thing:(\d+)/;
+
 function extractThingId(url) {
-  // Regular expression to match Thingiverse URLs and extract thingId
-  const regex = /https:\/\/(?:www\.)?thingiverse\.com\/thing:(\d+)/;
   
   // Try to match the URL
   const match = url.match(regex);
